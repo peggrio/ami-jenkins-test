@@ -1,0 +1,38 @@
+name: Packer Validation
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Packer Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup Packer
+        uses: hashicorp/setup-packer@main
+
+      - name: Initialize and Validate Packer Template
+        run: |
+          cd ./packer/
+          packer init jenkins-ami.pkr.hcl
+          packer validate jenkins-ami.pkr.hcl
+
+      - name: Format Packer Template
+        run: |
+          cd ./packer/
+          packer fmt jenkins-ami.pkr.hcl
+
+      - name: Check for Changes
+        run: |
+          git diff --exit-code
+          if [ $? -eq 1 ]; then
+            echo "ERROR: Running 'packer fmt' made changes to the jenkins-ami.pkr.hcl file."
+            exit 1
+          fi    
+          
+          

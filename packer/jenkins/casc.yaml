@@ -1,0 +1,34 @@
+jenkins:
+  systemMessage: "Testing"
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "admin"
+          password: "admin345"
+  authorizationStrategy:
+    globalMatrix:
+      permissions:
+        - "Overall/Administer:admin"
+        - "Overall/Read:authenticated"
+
+# credentials:
+#   system:
+#     domainCredentials:
+#       - credentials:
+#           - usernamePassword:
+#               scope: GLOBAL
+#               id: "github_token"
+#               username: "${{ secrets.GITHUB_USERNAME }}"
+#               password: "${{ secrets.GITHUB_CREDS }}"
+#               description: "Github token for Jenkins"
+
+#           - usernamePassword:
+#               scope: GLOBAL
+#               id: "dockerhub_credentials"
+#               username: "${{ secrets.DOCKERHUB_USERNAME }}"
+#               password: "${{ secrets.DOCKERHUB_CREDS }}"
+#               description: "Docker Hub token for Jenkins"
+
+jobs:
+  - file: /var/lib/jenkins/init.groovy.d/job-dsl.groovy
